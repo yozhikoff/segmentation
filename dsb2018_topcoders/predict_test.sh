@@ -3,9 +3,10 @@ pushd selim
 popd
 
 pushd albu/src
+
 ./predict_test.sh
 popd
 
-pushd victor 
+pushd victor
 ./predict_test.sh
 popd
