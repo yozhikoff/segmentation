@@ -82,10 +82,26 @@ def predict8tta(model, batch, sigmoid):
     return np.moveaxis(np.mean(ret, axis=0), 1, -1)
 
 
+def recursion_change_bn(module):
+    if isinstance(module, torch.nn.BatchNorm2d):
+        module.track_running_stats = 1
+    if isinstance(module, torch.nn.Upsample):
+        module.align_corners = True
+        module.mode = 'bilinear'
+    else:
+        for i, (name, module1) in enumerate(module._modules.items()):
+            module1 = recursion_change_bn(module1)
+    return module
+
+
+
+
 def read_model(project, fold):
-    # model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold))))
-    model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold))))
+    model = torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)))
+    for i, (name, module) in enumerate(model._modules.items()):
+        module = recursion_change_bn(model)
     model.eval()
+    model = nn.DataParallel(model)
     return model
 
 
