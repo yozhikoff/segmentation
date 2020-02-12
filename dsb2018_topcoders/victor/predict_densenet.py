@@ -116,7 +116,7 @@ if __name__ == '__main__':
             #                 pr = pr[::-1, ...]
             #             mask += pr  # [..., :2]
 
-            mask = np.zeros((img0.shape[0], img0.shape[1], OUT_CHANNELS))
+            mask = np.zeros((img0.shape[0], img0.shape[1], 3))
             for model in models:
                 inp = preprocess_inputs(np.array([img0], "float32"))
                 pred = model.predict(inp)

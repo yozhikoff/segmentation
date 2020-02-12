@@ -1,9 +1,12 @@
 from os import path, mkdir, listdir
 import numpy as np
+
 np.random.seed(1)
 import random
+
 random.seed(1)
 import tensorflow as tf
+
 tf.set_random_seed(1)
 import timeit
 import cv2
@@ -19,11 +22,13 @@ all_ids = []
 all_images = []
 all_masks = []
 
+
 def preprocess_inputs(x):
     x = np.asarray(x, dtype='float32')
     x /= 127.5
     x -= 1.
     return x
+
 
 def bgr_to_lab(img):
     lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
@@ -33,21 +38,22 @@ def bgr_to_lab(img):
         lab = 255 - lab
     return lab[..., np.newaxis]
 
+
 if __name__ == '__main__':
     t0 = timeit.default_timer()
 
     if not path.isdir(test_pred):
         mkdir(test_pred)
-        
+
     print('Loading models')
 
     models = []
-    
+
     for it in range(4):
         model = get_inception_resnet_v2_unet_softmax((None, None), weights=None)
         model.load_weights(path.join(models_folder, 'inception_resnet_v2_weights_{0}.h5'.format(it)))
         models.append(model)
-        
+
     print('Predicting test')
     for d in tqdm(listdir(test_folder)):
         if not path.isdir(path.join(test_folder, d)):
@@ -64,7 +70,7 @@ if __name__ == '__main__':
                 img = cv2.resize(img, None, fx=1.25, fy=1.25)
             elif scale == 3:
                 img = cv2.resize(img, None, fx=1.5, fy=1.5)
-                
+
             x0 = 16
             y0 = 16
             x1 = 16
@@ -79,8 +85,8 @@ if __name__ == '__main__':
                 y1 = (32 - img.shape[0] % 32) - y0
                 y0 += 16
                 y1 += 16
-            img0 = np.pad(img, ((y0,y1), (x0,x1), (0, 0)), 'symmetric')
-            
+            img0 = np.pad(img, ((y0, y1), (x0, x1), (0, 0)), 'symmetric')
+
             # inp0 = []
             # inp1 = []
             # for flip in range(2):
@@ -116,15 +122,14 @@ if __name__ == '__main__':
             #                 pr = pr[::-1, ...]
             #             mask += pr  # [..., :2]
 
-
-            mask = np.zeros((img0.shape[0], img0.shape[1], OUT_CHANNELS))
+            mask = np.zeros((img0.shape[0], img0.shape[1], 3))
             for model in models:
                 inp = preprocess_inputs(np.array([img0], "float32"))
                 pred = model.predict(inp)
                 mask += pred[0]
 
             mask /= (len(models))
-            mask = mask[y0:mask.shape[0]-y1, x0:mask.shape[1]-x1, ...]
+            mask = mask[y0:mask.shape[0] - y1, x0:mask.shape[1] - x1, ...]
             if scale > 0:
                 mask = cv2.resize(mask, (final_mask.shape[1], final_mask.shape[0]))
             final_mask += mask
@@ -132,6 +137,6 @@ if __name__ == '__main__':
         final_mask = final_mask * 255
         final_mask = final_mask.astype('uint8')
         cv2.imwrite(path.join(test_pred, '{0}.png'.format(fid)), final_mask, [cv2.IMWRITE_PNG_COMPRESSION, 9])
-        
+
     elapsed = timeit.default_timer() - t0
     print('Time: {:.3f} min'.format(elapsed / 60))
