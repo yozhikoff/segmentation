@@ -16,6 +16,7 @@ from skimage.morphology import watershed
 from skimage.morphology import square, dilation
 import pandas as pd
 import math
+import numpy as np
 
 data_folder = path.join('..', 'data')
 pred_folder = path.join('..', 'predictions')
@@ -93,7 +94,7 @@ def get_inputs(filename, pred_folder, img_folder, truth_folder=None, extend_mask
     
     coords = [pr.centroid for pr in pred_props]
     if len(coords) > 0:
-        t = KDTree(coords)
+        t = KDTree(np.array(coords))
         neighbors100 = t.query_radius(coords, r=50)
         neighbors200 = t.query_radius(coords, r=100)
         neighbors300 = t.query_radius(coords, r=150)
