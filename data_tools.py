@@ -83,7 +83,7 @@ def prepare_test_data(tiles, tile_names, base_dir, force=False):
 
     base_dir = Path(base_dir)
     if not os.path.exists(base_dir):
-        os.mkdir(base_dir)
+        os.makedirs(base_dir)
 
     if not force and len(os.listdir(base_dir)) > 0:
         raise ValueError(f'base_dir {base_dir} is not empty, use force=True option if you want to rewrite files')
