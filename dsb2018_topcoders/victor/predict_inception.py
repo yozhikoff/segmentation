@@ -86,6 +86,7 @@ if __name__ == '__main__':
                 y0 += 16
                 y1 += 16
             img0 = np.pad(img, ((y0, y1), (x0, x1), (0, 0)), 'symmetric')
+            img0 = np.concatenate([img0, bgr_to_lab(img0)], axis=2)
 
             # inp0 = []
             # inp1 = []
