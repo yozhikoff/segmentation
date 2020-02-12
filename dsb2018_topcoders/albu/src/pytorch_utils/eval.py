@@ -97,7 +97,11 @@ def recursion_change_bn(module):
 
 
 def read_model(project, fold):
-    model = torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)))
+    # model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold))))
+    #print(project)
+   # model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location={'cuda:0': 'cpu'}))
+    model = torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location={'cuda:0': 'cpu'})
+    # model =. check_point['net']
     for i, (name, module) in enumerate(model._modules.items()):
         module = recursion_change_bn(model)
     model.eval()
@@ -131,8 +135,8 @@ class Evaluator:
         pbar = tqdm.tqdm(val_dl, total=len(val_dl))
         for data in pbar:
             samples = data['image']
-            # predicted = predict(model, samples, flips=self.flips)
-            predicted = predict8tta(model, samples, self.config.sigmoid)
+            predicted = predict(model, samples)
+            #predicted = predict8tta(model, samples, self.config.sigmoid)
             self.process_batch(predicted, model, data, prefix=prefix)
         self.post_predict_action(prefix=prefix)
 

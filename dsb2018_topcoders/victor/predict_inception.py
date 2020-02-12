@@ -81,44 +81,49 @@ if __name__ == '__main__':
                 y1 += 16
             img0 = np.pad(img, ((y0,y1), (x0,x1), (0, 0)), 'symmetric')
             
-            img0 = np.concatenate([img0, bgr_to_lab(img0)], axis=2)
-            
-            inp0 = []
-            inp1 = []
-            for flip in range(2):
-                for rot in range(4):
-                    if flip > 0:
-                        img = img0[::-1, ...]
-                    else:
-                        img = img0
-                    if rot % 2 == 0:
-                        inp0.append(np.rot90(img, k=rot))
-                    else:
-                        inp1.append(np.rot90(img, k=rot))
-            
-            inp0 = np.asarray(inp0)
-            inp0 = preprocess_inputs(inp0)
-            inp1 = np.asarray(inp1)
-            inp1 = preprocess_inputs(inp1)
-            
-            mask = np.zeros((img0.shape[0], img0.shape[1], 3))
-            
+            # inp0 = []
+            # inp1 = []
+            # for flip in range(2):
+            #     for rot in range(4):
+            #         if flip > 0:
+            #             img = img0[::-1, ...]
+            #         else:
+            #             img = img0
+            #         if rot % 2 == 0:
+            #             inp0.append(np.rot90(img, k=rot))
+            #         else:
+            #             inp1.append(np.rot90(img, k=rot))
+            #
+            # inp0 = np.asarray(inp0)
+            # inp0 = preprocess_inputs(np.array(inp0, "float32"))
+            # inp1 = np.asarray(inp1)
+            # inp1 = preprocess_inputs(np.array(inp1, "float32"))
+
+            # mask = np.zeros((img0.shape[0], img0.shape[1], OUT_CHANNELS))
+
+            # for model in models:
+            #     pred0 = model.predict(inp0, batch_size=1)
+            #     pred1 = model.predict(inp1, batch_size=1)
+            #     j = -1
+            #     for flip in range(2):
+            #         for rot in range(4):
+            #             j += 1
+            #             if rot % 2 == 0:
+            #                 pr = np.rot90(pred0[int(j / 2)], k=(4 - rot))
+            #             else:
+            #                 pr = np.rot90(pred1[int(j / 2)], k=(4 - rot))
+            #             if flip > 0:
+            #                 pr = pr[::-1, ...]
+            #             mask += pr  # [..., :2]
+
+
+            mask = np.zeros((img0.shape[0], img0.shape[1], OUT_CHANNELS))
             for model in models:
-                pred0 = model.predict(inp0, batch_size=1)
-                pred1 = model.predict(inp1, batch_size=1)
-                j = -1
-                for flip in range(2):
-                    for rot in range(4):
-                        j += 1
-                        if rot % 2 == 0:
-                            pr = np.rot90(pred0[int(j / 2)], k=(4-rot))
-                        else:
-                            pr = np.rot90(pred1[int(j / 2)], k=(4-rot))
-                        if flip > 0:
-                            pr = pr[::-1, ...]
-                        mask += pr
-                        
-            mask /= (8 * len(models))
+                inp = preprocess_inputs(np.array([img0], "float32"))
+                pred = model.predict(inp)
+                mask += pred[0]
+
+            mask /= (len(models))
             mask = mask[y0:mask.shape[0]-y1, x0:mask.shape[1]-x1, ...]
             if scale > 0:
                 mask = cv2.resize(mask, (final_mask.shape[1], final_mask.shape[0]))
