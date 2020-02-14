@@ -97,11 +97,10 @@ def recursion_change_bn(module):
 
 
 def read_model(project, fold):
-    # model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold))))
-    #print(project)
-   # model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location={'cuda:0': 'cpu'}))
-    model = torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location={'cuda:0': 'cpu'})
-    # model =. check_point['net']
+    if not torch.cuda.is_available():
+        model = torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location={'cuda:0': 'cpu'})
+    else:
+        model = torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)))
     for i, (name, module) in enumerate(model._modules.items()):
         module = recursion_change_bn(model)
     model.eval()
