@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from distutils import dir_util
 import subprocess
-import cv2
+import cv2 as cv
 
 
 def get_x_and_y(name):
@@ -14,7 +14,7 @@ def get_x_and_y(name):
 def split_image(img, x_tiles_cnt=None, y_tiles_cnt=None, x_tile_size=None, y_tile_size=None, base='img'):
     '''
     Splits an image array to smaller tiles for further segmentation.
-    Specify tiles count OR tiles size. 
+    Specify tiles count OR tiles size.
     X axis means the arr.shape[1] coordinate, be careful!
     Tile names are used to restore the initial image after segmentation.
 
@@ -64,7 +64,7 @@ def split_image(img, x_tiles_cnt=None, y_tiles_cnt=None, x_tile_size=None, y_til
 def prepare_test_data(tiles, tile_names, base_dir, force=False):
     '''
     Saves data in the proper way.
-    
+
     Parameters
     ----------
     tiles : list
@@ -83,7 +83,7 @@ def prepare_test_data(tiles, tile_names, base_dir, force=False):
 
     base_dir = Path(base_dir)
     if not os.path.exists(base_dir):
-        os.mkdir(base_dir)
+        os.makedirs(base_dir)
 
     if not force and len(os.listdir(base_dir)) > 0:
         raise ValueError(f'base_dir {base_dir} is not empty, use force=True option if you want to rewrite files')
@@ -93,13 +93,13 @@ def prepare_test_data(tiles, tile_names, base_dir, force=False):
             tile = (tile * 255).astype(np.uint8)
         os.mkdir(base_dir / name)
         os.mkdir(base_dir / name / 'images')
-        cv2.imwrite(str(base_dir / name / 'images' / f'{name}.png'), tile)
+        cv.imwrite(str(base_dir / name / 'images' / f'{name}.png'), tile)
 
 
 def restore_image(work_dir, tiff=False):
     '''
     Restores the initial image.
-    
+
         Parameters
     ----------
     work_dir : str
@@ -109,7 +109,7 @@ def restore_image(work_dir, tiff=False):
     -------
     img : numpy ndarray
         Initial image
-    
+
     '''
 
     work_dir = Path(work_dir)
@@ -122,12 +122,12 @@ def restore_image(work_dir, tiff=False):
         tiles = {}
         max_number = int(0)
         for n in file_names:
-            tmp = cv2.imread(str(work_dir / n), -1)
+            tmp = cv.imread(str(work_dir / n), -1)
             tmp = (tmp + max_number) * (tmp > 0)
             max_number = tmp.max()
             tiles[get_x_and_y(n)] = tmp.copy()
     else:
-        tiles = {get_x_and_y(n): cv2.imread(str(work_dir / n), -1) for n in file_names}
+        tiles = {get_x_and_y(n): cv.imread(str(work_dir / n), -1) for n in file_names}
 
     long_tiles = []
 
@@ -141,11 +141,11 @@ def restore_image(work_dir, tiff=False):
     return np.vstack(long_tiles)
 
 
-def perform_segmentation(full_img_path, sample_dir, network_dir):
+def perform_segmentation(full_img_path, sample_dir, network_dir, force=False):
     network_dir = Path(network_dir)
-    full_img = cv2.imread(full_img_path, -1)
+    full_img = cv.imread(full_img_path, -1)
     tiles, tile_names = split_image(img=full_img, x_tile_size=1000, y_tile_size=1000)
-    prepare_test_data(tiles, tile_names, sample_dir)
+    prepare_test_data(tiles, tile_names, sample_dir, force=force)
 
     try:
         dir_util.remove_tree(str(network_dir / 'data_test'))
@@ -160,7 +160,7 @@ def perform_segmentation(full_img_path, sample_dir, network_dir):
         pass
 
     try:
-        dir_util.remove_tree(str(network_dir / 'albu/result_test'))
+        dir_util.remove_tree(str(network_dir / 'albu/results_test'))
     except:
         pass
 
