@@ -141,11 +141,11 @@ def restore_image(work_dir, tiff=False):
     return np.vstack(long_tiles)
 
 
-def perform_segmentation(full_img_path, sample_dir, network_dir):
+def perform_segmentation(full_img_path, sample_dir, network_dir, force=False):
     network_dir = Path(network_dir)
     full_img = cv.imread(full_img_path, -1)
     tiles, tile_names = split_image(img=full_img, x_tile_size=1000, y_tile_size=1000)
-    prepare_test_data(tiles, tile_names, sample_dir)
+    prepare_test_data(tiles, tile_names, sample_dir, force=force)
 
     try:
         dir_util.remove_tree(str(network_dir / 'data_test'))
