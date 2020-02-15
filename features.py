@@ -91,8 +91,3 @@ class NucleiFeatures():
             self.compute()
         df = pd.DataFrame(self.computed_features, columns=self.feature_names)
         return df
-
-
-# network_path = '/home/yubi/Downloads1/dsb2018_topcoders'
-# full_image_name = '/home/yubi/Dropbox/Python/embl/Sanger/ilastic_test3.png'
-# sample_path = '/home/yubi/Downloads1/sample_test'

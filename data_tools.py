@@ -4,6 +4,10 @@ from pathlib import Path
 from distutils import dir_util
 import subprocess
 import cv2 as cv
+from PIL import Image
+from matplotlib import pyplot as plt
+
+Image.MAX_IMAGE_PIXELS = None
 
 
 def get_x_and_y(name):
@@ -143,7 +147,10 @@ def restore_image(work_dir, tiff=False):
 
 def perform_segmentation(full_img_path, sample_dir, network_dir, force=False):
     network_dir = Path(network_dir)
-    full_img = cv.imread(full_img_path, -1)
+    try:
+        full_img = cv.imread(full_img_path, -1)
+    except cv.error:
+        full_img = plt.imread(full_img_path)
     tiles, tile_names = split_image(img=full_img, x_tile_size=1000, y_tile_size=1000)
     prepare_test_data(tiles, tile_names, sample_dir, force=force)
 
