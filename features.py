@@ -22,7 +22,7 @@ class NucleiFeatures():
 
     def ellips(self, img, orig, **kwargs):
         try:
-            cont = cv.findContours(img.astype(np.uint8).T.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)[0][0][:, 0, :]
+            cont = cv.findContours(img.astype(np.uint8).T.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)[1][0][:, 0, :]
             ellipse_center, axles, angle = cv.fitEllipse(cont)
             x, y = ellipse_center
             x = x + self.x_min + kwargs['x_tile'] * img.shape[0]
@@ -69,8 +69,9 @@ class NucleiFeatures():
         self.computed_features = []
         base_names = [os.path.splitext(i)[0] for i in os.listdir(self.tif_folder)]
         for filename in tqdm(base_names):
+            print(f'{self.tif_folder}/{filename}.tif', f'{self.png_folder}/{filename}/image/{filename}.png')
             img = cv.imread(f'{self.tif_folder}/{filename}.tif', -1)
-            orig = cv.imread(f'{self.png_folder}/{filename}', -1)
+            orig = cv.imread(f'{self.png_folder}/{filename}/images/{filename}.png', -1)
 
             img = np.rot90(img, k=3)
             img = np.flip(img, axis=1)
