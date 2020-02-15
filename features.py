@@ -46,7 +46,7 @@ class NucleiFeatures():
         self.computed_features = None
         self.feature_dict = {'position': (self.position, ['x', 'y']),
                              'size': (self.size, ['size']),
-                             'ellips': (
+                             'ellipse': (
                              self.ellips, ['first_axis', 'second_axis', 'ellipse_x', 'ellipse_y', 'ellipse_angle']),
                              'color': (
                              self.color, ['Blue_mean', 'Red_mean', 'Green_mean', 'Blue_std', 'Red_std', 'Green_std'])}
