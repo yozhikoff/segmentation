@@ -69,7 +69,6 @@ class NucleiFeatures():
         self.computed_features = []
         base_names = [os.path.splitext(i)[0] for i in os.listdir(self.tif_folder)]
         for filename in tqdm(base_names):
-            print(f'{self.tif_folder}/{filename}.tif', f'{self.png_folder}/{filename}/image/{filename}.png')
             img = cv.imread(f'{self.tif_folder}/{filename}.tif', -1)
             orig = cv.imread(f'{self.png_folder}/{filename}/images/{filename}.png', -1)
 
