@@ -17,6 +17,7 @@ unzip /path/to/zip/dsb2018_topcoders.zip -d /path/to/repo/segmentation/dsb2018_t
 3. Go to the segmentation folder and reset git files
 
 ```shell script
+cd /path/to/repo/segmentation
 git reset --hard
 ```
 
