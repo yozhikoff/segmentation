@@ -35,3 +35,5 @@ sh ./install.sh
 ```
 python run_test.py
 ```
+
+You can also try `example_notebook.ipynb` if you want to see usage details.
