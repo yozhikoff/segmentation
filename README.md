@@ -1,28 +1,36 @@
 # segmentation
 
 ## Installation
-1) Clone this repository
-2) Download and extract [this](https://www.dropbox.com/s/qvtgbz0bnskn9wu/dsb2018_topcoders.zip?dl=0)
-3) Install `CUDA 10` and `cuDNN 7` (the latest versions work aswell)
-4) Create new conda env
-``` 
-conda create -n new_env python=3.6.9 -y
-conda activate new_env
+1. Clone this repository
+
 ```
+git clone https://github.com/yozhikoff/segmentation.git
+```
+
+2. Download [this](https://www.dropbox.com/s/qvtgbz0bnskn9wu/dsb2018_topcoders.zip?dl=0) and extract it to the
+segmentation folder, replace all existing files using `Ay` keys when unzip asks about it
+
+```
+unzip /path/to/zip/dsb2018_topcoders.zip -d /path/to/repo/segmentation/dsb2018_topcoders
+```
+
+3. Go to the segmentation folder and reset git files
+
+```shell script
+git reset --hard
+```
+
+4. Create new conda env
+``` 
+conda create -n seg python=3.6.9 -y
+conda activate seg
+``` 
 5) Install packages via conda and pip, simply (inside your conda env!)
 
-**Read note below first!**
 ```
 sh ./install.sh
 ```
-6) Copy `data_test` to `dsb2018_topcoders` and run `predict_test.sh`
+6) Test your installation using
 ```
-cp -r data_test dsb2018_topcoders
-./predict_test.sh
+python run_test.py
 ```
-
-This works only on the GPU machine.
-
-### Tensorflow note
-Pre-compilated versions of TF don't support modern processor instructions and work properly only with some particular versions of CUDA and cuDNN, so it's a realy good idea to build it from sources instead of conda installation. 
-
