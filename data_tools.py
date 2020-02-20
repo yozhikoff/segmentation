@@ -91,7 +91,7 @@ def prepare_test_data(tiles, tile_names, base_dir, force=False):
 
     if not force and len(os.listdir(base_dir)) > 0:
         raise ValueError(f'base_dir {base_dir} is not empty, use force=True option if you want to rewrite files')
-    else if len(os.listdir(base_dir)):
+    elif len(os.listdir(base_dir)):
         dir_util.remove_tree(str(network_dir / 'predictions'))
         os.makedirs(base_dir)
 
