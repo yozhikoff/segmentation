@@ -1,16 +1,20 @@
 import os
-import numpy as np
-from tqdm import tqdm_notebook as tqdm
-from PIL import Image
+
 import cv2 as cv
-import scipy.ndimage
+import numpy as np
 import pandas as pd
+import scipy.ndimage
+from PIL import Image
 from tqdm import tqdm as tqdm
+from tqdm import tqdm_notebook as tqdm
+
 Image.MAX_IMAGE_PIXELS = None
+
 
 def get_x_and_y(name):
     x, y = os.path.splitext(name)[0].split('_')[-2:]
     return int(x), int(y)
+
 
 class NucleiFeatures():
 
@@ -47,9 +51,14 @@ class NucleiFeatures():
         self.feature_dict = {'position': (self.position, ['x', 'y']),
                              'size': (self.size, ['size']),
                              'ellipse': (
-                             self.ellips, ['first_axis', 'second_axis', 'ellipse_x', 'ellipse_y', 'ellipse_angle']),
+                                 self.ellips, ['first_axis', 'second_axis', 'ellipse_x', 'ellipse_y', 'ellipse_angle']),
                              'color': (
-                             self.color, ['Blue_mean', 'Red_mean', 'Green_mean', 'Blue_std', 'Red_std', 'Green_std'])}
+                                 self.color,
+                                 ['Blue_mean', 'Red_mean', 'Green_mean', 'Blue_std', 'Red_std', 'Green_std']),
+                             'color_gray': (
+                                 self.color,
+                                 ['Color_mean', 'Color_std'])
+                             }
         if features == 'all':
             self.features = self.feature_dict.keys()
         else:
