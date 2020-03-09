@@ -5,8 +5,9 @@ import numpy as np
 import pandas as pd
 import scipy.ndimage
 from PIL import Image
-from tqdm import tqdm as tqdm
-from tqdm import tqdm_notebook as tqdm
+
+from tqdm import autonotebook
+tqdm = autonotebook.tqdm
 
 Image.MAX_IMAGE_PIXELS = None
 
@@ -79,7 +80,7 @@ class NucleiFeatures():
         base_names = [os.path.splitext(i)[0] for i in os.listdir(self.tif_folder)]
         for filename in tqdm(base_names):
             img = cv.imread(f'{self.tif_folder}/{filename}.tif', -1)
-            orig = cv.imread(f'{self.png_folder}/{filename}/images/{filename}.png', -1)
+            orig = cv.imread(f'{self.png_folder}/{filename}/images/{filename}.png', 1)
 
             img = np.rot90(img, k=3)
             img = np.flip(img, axis=1)
