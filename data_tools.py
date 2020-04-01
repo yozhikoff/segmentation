@@ -177,4 +177,4 @@ def perform_segmentation(full_img_path, sample_dir, network_dir, force=False):
         pass
 
     subprocess.run(f"cd {network_dir} && bash 'predict_test.sh'", shell=True)
-    dir_util.copy_tree(str(network_dir / 'predictions'), sample_dir + '_segmented');
+    dir_util.copy_tree(str(network_dir / 'predictions'), str(Path(sample_dir)) + '_segmented');
