@@ -6,6 +6,7 @@ import subprocess
 import cv2 as cv
 from PIL import Image
 from matplotlib import pyplot as plt
+import features
 
 Image.MAX_IMAGE_PIXELS = None
 
@@ -150,7 +151,7 @@ def restore_image(work_dir, tiff=False):
     return np.vstack(long_tiles)
 
 
-def perform_segmentation(full_img_path, sample_dir, network_dir, force=False):
+def perform_segmentation(full_img_path, sample_dir, network_dir, force=False, features=None):
     network_dir = Path(network_dir)
     try:
         full_img = cv.imread(full_img_path, -1)
@@ -176,5 +177,12 @@ def perform_segmentation(full_img_path, sample_dir, network_dir, force=False):
     except:
         pass
 
+    result_dir = str(Path(sample_dir)) + '_segmented'
+
     subprocess.run(f"cd {network_dir} && bash 'predict_test.sh'", shell=True)
-    dir_util.copy_tree(str(network_dir / 'predictions'), str(Path(sample_dir)) + '_segmented');
+    dir_util.copy_tree(str(network_dir / 'predictions'), result_dir);
+
+    if features is not None:
+        features.NucleiFeatures(f'{result_dir}/lgbm_test_sub2', sample_dir,
+                                features=features).df().to_csv(f'{result_dir}/{os.path.split(sample_dir)[1]}.csv',
+                                                               header=False)
