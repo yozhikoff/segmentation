@@ -6,7 +6,7 @@ import subprocess
 import cv2 as cv
 from PIL import Image
 from matplotlib import pyplot as plt
-import features
+from features import NucleiFeatures
 
 Image.MAX_IMAGE_PIXELS = None
 
@@ -183,6 +183,6 @@ def perform_segmentation(full_img_path, sample_dir, network_dir, force=False, fe
     dir_util.copy_tree(str(network_dir / 'predictions'), result_dir);
 
     if features is not None:
-        features.NucleiFeatures(f'{result_dir}/lgbm_test_sub2', sample_dir,
+        NucleiFeatures(f'{result_dir}/lgbm_test_sub2', sample_dir,
                                 features=features).df().to_csv(f'{result_dir}/{os.path.split(sample_dir)[1]}.csv',
                                                                header=False)
