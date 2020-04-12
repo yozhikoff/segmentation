@@ -185,4 +185,4 @@ def perform_segmentation(full_img_path, sample_dir, network_dir, force=False, fe
     if features is not None:
         NucleiFeatures(f'{result_dir}/lgbm_test_sub2', sample_dir,
                                 features=features).df().to_csv(f'{result_dir}/{os.path.split(sample_dir)[1]}.csv',
-                                                               header=False)
+                                                               index=False)
