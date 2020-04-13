@@ -1,4 +1,6 @@
-# segmentation
+# Segmentation of nuclei using DSB-2018 top-1 neural network model
+
+For comparison of Data Science Bowl 2018 best segmentation models see [Nucleus segmentation across imaging experiments: the 2018 Data Science Bowl, Juan C. Caicedo et al](https://www.nature.com/articles/s41592-019-0612-7).  
 
 ## Installation
 1. Clone this repository
