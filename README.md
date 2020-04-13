@@ -11,6 +11,7 @@ git clone https://github.com/yozhikoff/segmentation.git
 segmentation folder, replace all existing files using `Ay` keys when unzip asks about it
 
 ```
+wget https://www.dropbox.com/s/qvtgbz0bnskn9wu/dsb2018_topcoders.zip?dl=1 # note dl=1
 unzip /path/to/zip/dsb2018_topcoders.zip -d /path/to/repo/segmentation/dsb2018_topcoders
 ```
 
