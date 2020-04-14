@@ -10,11 +10,11 @@ git clone https://github.com/yozhikoff/segmentation.git
 ```
 
 2. Download [this](https://www.dropbox.com/s/qvtgbz0bnskn9wu/dsb2018_topcoders.zip?dl=0) and extract it to the
-segmentation folder, replace all existing files using `Ay` keys when unzip asks about it
+segmentation folder, replace all existing files using `Ay` keys when unzip asks about it. Note that you need to export to `/repo/segmentation/dsb2018_topcoders` withing the repo.
 
 ```
 wget https://www.dropbox.com/s/qvtgbz0bnskn9wu/dsb2018_topcoders.zip?dl=1 dsb2018_topcoders.zip # note dl=1
-unzip /path/to/zip/dsb2018_topcoders.zip -d /path/to/repo/segmentation/dsb2018_topcoders
+unzip /path/to/zip/dsb2018_topcoders.zip -d /path/to/repo/segmentation/dsb2018_topcoders 
 ```
 
 3. Go to the segmentation folder and reset git files
