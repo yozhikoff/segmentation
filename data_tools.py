@@ -1,11 +1,13 @@
-import numpy as np
 import os
-from pathlib import Path
-from distutils import dir_util
 import subprocess
+from distutils import dir_util
+from pathlib import Path
+
 import cv2 as cv
+import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
+
 from features import NucleiFeatures
 
 Image.MAX_IMAGE_PIXELS = None
@@ -17,9 +19,9 @@ def get_x_and_y(name):
 
 
 def split_image(img, x_tiles_cnt=None, y_tiles_cnt=None, x_tile_size=None, y_tile_size=None, base='img'):
-    '''
+    """
     Splits an image array to smaller tiles for further segmentation.
-    Specify tiles count OR tiles size. 
+    Specify tiles count OR tiles size.
     X axis means the arr.shape[1] coordinate, be careful!
     Tile names are used to restore the initial image after segmentation.
 
@@ -31,9 +33,9 @@ def split_image(img, x_tiles_cnt=None, y_tiles_cnt=None, x_tile_size=None, y_til
         Number of tiles along the x axis of img.
     y_tiles_cnt : integer
         Number of tiles along the y axis of img.
-    x_tiles_size : integer
+    x_tile_size : integer
         Size of tile along x axis.
-    y_tiles_size : integer
+    y_tile_size : integer
         Size of tile along y axis.
     base : str
         Base for tile names.
@@ -44,7 +46,7 @@ def split_image(img, x_tiles_cnt=None, y_tiles_cnt=None, x_tile_size=None, y_til
         List of tiles.
     tile_names : list
         List of tile names.
-    '''
+    """
     if (x_tile_size is not None) and (y_tile_size is not None):
         x_tiles_cnt = img.shape[1] // x_tile_size
         y_tiles_cnt = img.shape[0] // y_tile_size
@@ -67,14 +69,14 @@ def split_image(img, x_tiles_cnt=None, y_tiles_cnt=None, x_tile_size=None, y_til
 
 
 def prepare_test_data(tiles, tile_names, base_dir, force=False):
-    '''
+    """
     Saves data in the proper way.
-    
+
     Parameters
     ----------
     tiles : list
         List of tiles.
-    tile names : list
+    tile_names : list
         List of tile names.
     base_dir : str
         Full path to base directory, 'full/path/../data_test' in normal case.
@@ -84,7 +86,7 @@ def prepare_test_data(tiles, tile_names, base_dir, force=False):
     Returns
     -------
     None
-    '''
+    """
 
     base_dir = Path(base_dir)
     if not os.path.exists(base_dir):
@@ -93,7 +95,7 @@ def prepare_test_data(tiles, tile_names, base_dir, force=False):
     if not force and len(os.listdir(base_dir)) > 0:
         raise ValueError(f'base_dir {base_dir} is not empty, use force=True option if you want to rewrite files')
     elif len(os.listdir(base_dir)):
-        dir_util.remove_tree(str(network_dir / 'predictions'))
+        dir_util.remove_tree(str(base_dir))
         os.makedirs(base_dir)
 
     for tile, name in zip(tiles, tile_names):
@@ -105,9 +107,9 @@ def prepare_test_data(tiles, tile_names, base_dir, force=False):
 
 
 def restore_image(work_dir, tiff=False):
-    '''
+    """
     Restores the initial image.
-    
+
         Parameters
     ----------
     work_dir : str
@@ -119,8 +121,8 @@ def restore_image(work_dir, tiff=False):
     -------
     img : numpy ndarray
         Initial image
-    
-    '''
+
+    """
 
     work_dir = Path(work_dir)
 
