@@ -5,9 +5,7 @@ import numpy as np
 import pandas as pd
 import scipy.ndimage
 from PIL import Image
-
-from tqdm import autonotebook
-tqdm = autonotebook.tqdm
+from tqdm import tqdm
 
 Image.MAX_IMAGE_PIXELS = None
 
