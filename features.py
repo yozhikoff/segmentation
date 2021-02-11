@@ -1,4 +1,5 @@
 import os
+from multiprocessing import Pool as ProcessPool
 
 import cv2 as cv
 import numpy as np
@@ -15,7 +16,7 @@ def get_x_and_y(name):
     return int(x), int(y)
 
 
-class NucleiFeatures():
+class NucleiFeatures:
 
     def position(self, img, orig, **kwargs):
         x, y = scipy.ndimage.measurements.center_of_mass(img)
@@ -93,10 +94,47 @@ class NucleiFeatures():
                 self.computed_features.append(tmp)
         return self
 
+    def compute_multipricess(self, n_workers=10):
+
+        orig_list = []
+        img_list = []
+        filenames = []
+        base_names = [os.path.splitext(i)[0] for i in os.listdir(self.tif_folder)]
+        for filename in tqdm(base_names):
+            img = cv.imread(f'{self.tif_folder}/{filename}.tif', -1)
+            orig = cv.imread(f'{self.png_folder}/{filename}/images/{filename}.png', 1)
+
+            img = np.rot90(img, k=3)
+            img = np.flip(img, axis=1)
+            orig = np.rot90(orig, k=3)
+            orig = np.flip(orig, axis=1)
+
+            orig_list.append(orig)
+            img_list.append(img)
+            filenames.append(filename)
+
+        def compute_one(data):
+            img = data[0]
+            orig = data[1]
+            filename = data[2]
+
+            for i in range(1, img.max()):
+                tmp_img = (img == i)
+                tmp = []
+                x_tile, y_tile = get_x_and_y(filename)
+                for f in self.features:
+                    tmp += self.feature_dict[f][0](tmp_img, orig, x_tile=x_tile, y_tile=y_tile)
+                return tmp
+
+            pool = ProcessPool(n_workers)
+            self.computed_features = pool.map(compute_one, zip(img_list, orig_list, filenames))
+            pool.close()
+            pool.join()
+
+        return self
+
     def df(self):
         if self.computed_features is None:
             self.compute()
         df = pd.DataFrame(self.computed_features, columns=self.feature_names)
         return df
-
-
