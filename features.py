@@ -100,7 +100,7 @@ class NucleiFeatures:
         img_list = []
         filenames = []
         base_names = [os.path.splitext(i)[0] for i in os.listdir(self.tif_folder)]
-        for filename in tqdm(base_names):
+        for filename in base_names:
             img = cv.imread(f'{self.tif_folder}/{filename}.tif', -1)
             orig = cv.imread(f'{self.png_folder}/{filename}/images/{filename}.png', 1)
 
@@ -126,10 +126,9 @@ class NucleiFeatures:
                     tmp += self.feature_dict[f][0](tmp_img, orig, x_tile=x_tile, y_tile=y_tile)
                 return tmp
 
-            pool = ProcessPool(n_workers)
-            self.computed_features = pool.map(compute_one, zip(img_list, orig_list, filenames))
-            pool.close()
-            pool.join()
+        with ProcessPool(n_workers) as p:
+            result = list(tqdm(p.imap(compute_one, zip(img_list, orig_list, filenames)), total=len(orig_list)))
+            self.computed_features = result
 
         return self
 
