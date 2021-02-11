@@ -16,6 +16,10 @@ def get_x_and_y(name):
     return int(x), int(y)
 
 
+def flatten_list(l):
+    return [item for sublist in l for item in sublist]
+
+
 class NucleiFeatures:
 
     def position(self, img, orig, **kwargs):
@@ -116,6 +120,7 @@ class NucleiFeatures:
         global compute_one
 
         def compute_one(data):
+            computed_features = []
             img = data[0]
             orig = data[1]
             filename = data[2]
@@ -126,11 +131,12 @@ class NucleiFeatures:
                 x_tile, y_tile = get_x_and_y(filename)
                 for f in self.features:
                     tmp += self.feature_dict[f][0](tmp_img, orig, x_tile=x_tile, y_tile=y_tile)
-                return tmp
+                computed_features.append(tmp)
+            return computed_features
 
         with ProcessPool(n_workers) as p:
             result = list(tqdm(p.imap(compute_one, zip(img_list, orig_list, filenames)), total=len(orig_list)))
-            self.computed_features = result
+            self.computed_features = flatten_list(result)
 
         return self
 
