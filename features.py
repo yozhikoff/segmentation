@@ -113,6 +113,8 @@ class NucleiFeatures:
             img_list.append(img)
             filenames.append(filename)
 
+        global compute_one
+
         def compute_one(data):
             img = data[0]
             orig = data[1]
