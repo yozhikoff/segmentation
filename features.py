@@ -7,6 +7,7 @@ import pandas as pd
 import scipy.ndimage
 from PIL import Image
 from tqdm import tqdm
+from scipy.sparse import coo_matrix, csr_matrix
 
 Image.MAX_IMAGE_PIXELS = None
 
